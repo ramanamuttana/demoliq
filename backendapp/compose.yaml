@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  java_app:
+    container_name: java_app
+    image: java_app:latest
+    ports:
+      - '8080:8080'
+    environment:
+      - 'DATABASE_URL=jdbc:postgresql://java_db:5432/postgres'
+      - 'DATABASE_USERNAME=postgres'
+      - 'DATABASE_PASSWORD=password'
+      - 'SPRING_JPA_HIBERNATE_DDL_AUTO=update'
+    depends_on:
+      - java_db
+
+  java_db:
+    container_name: java_db
+    image: postgres:15
+    ports:
+      - '5432:5432'
+    environment:
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_PASSWORD=password'
+      - 'POSTGRES_DB=postgres'
+    volumes:
+      - pgdatas:/var/lib/postgresql/data
+
+  whitesneakers_pg:
+    container_name: whitesneakers_pg
+    image: dpage/pgadmin4
+    environment:
+      - 'PGADMIN_DEFAULT_EMAIL=whitesneakers@gmail.com'
+      - 'PGADMIN_DEFAULT_PASSWORD=pgadmin'
+    ports:
+      - '5050:80'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  pgdatas:
+  pgadmin_data:
